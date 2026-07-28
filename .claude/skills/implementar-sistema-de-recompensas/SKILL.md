@@ -54,11 +54,13 @@ node --version
 
 ## ETAPA 1 — Personalizar com a marca da pessoa
 
-Antes de qualquer conta, deixe o projeto com a cara dela. Pergunte:
+Antes de qualquer conta, deixe o projeto com a cara dela. Pergunte (uma de cada vez):
 
 1. **Nome do projeto/live** (ex.: "Lives da Ju", "Aulão de Terça"). Substitui "BIM Coder Lives" e "Live BIM Coder".
 2. **Assinatura do rodapé** (nome/arroba/e-mail dela).
 3. **As recompensas**: quantos marcos, em quais números de presenças seguidas, e qual o prêmio de cada um. Se ela não souber, sugira manter o padrão validado: 4 marcos em 5, 10, 15 e 25 lives (do brinde leve ao desconto forte — o mais valioso sempre por último). Os links de entrega podem ficar pendentes por enquanto.
+4. **Identidade visual**: ela tem um design system, manual de marca ou pelo menos uma cor principal? Peça o que existir — cor primária (hex, ex.: `#7F56D9`), fonte preferida, logo. Se não tiver nada, mantenha o padrão do template (violeta Untitled UI + fonte Inter), que já é bonito e testado. Não invente identidade: na dúvida, padrão.
+5. **Tema padrão: escuro ou claro?** O site tem os dois (botão de alternar no topo); a pergunta é qual aparece primeiro pra quem nunca visitou. Hoje o padrão segue o sistema operacional do visitante — se a pessoa quiser forçar um lado (ex.: dark combina com live/tech; light com público corporativo), ajuste no código.
 
 Com as respostas, edite:
 
@@ -68,6 +70,11 @@ Com as respostas, edite:
 | Lista de recompensas do front (marco, título, descrição, link, ícone) | `src/lib/rewards.ts` (array `REWARDS`) |
 | Tipos das recompensas | `src/types/index.ts` (union `TipoRecompensa`) — mantenha os `tipo` idênticos aos usados em `rewards.ts` e no SQL |
 | Lógica de desbloqueio no banco | gere `supabase/migrations/setup_personalizado.sql` (ver abaixo) |
+| Cor da marca | `tailwind.config.js` → escala `brand` (25–950): gere os 12 tons a partir do hex da pessoa (600 ≈ a cor principal; 25–100 bem claros p/ fundos; 700+ escuros p/ hover/contraste). Verifique legibilidade: texto branco sobre `brand-600` precisa contrastar |
+| Fonte | `index.html` (link do Google Fonts) + `tailwind.config.js` → `fontFamily.sans`. Só trocar se a pessoa pediu; Inter é o padrão |
+| Tema padrão (dark/light) | `src/hooks/useTheme.ts` → em `getInitial()`, troque o fallback (a linha do `matchMedia`) por `return 'dark';` ou `return 'light';`. O toggle continua funcionando e a escolha do visitante fica salva no navegador |
+
+Depois das edições de visual, suba o site local (Etapa 4 adiantada, se `npm install` já tiver rodado) ou avise que a pessoa vai conferir o resultado no primeiro teste local — e valide com ela: cores legíveis nos dois temas, nada "apagado" no dark.
 
 **Gerando `setup_personalizado.sql`:** copie `supabase/migrations/001_initial_schema.sql` e ajuste:
 1. No seed de `app_bimcoderlives_admin_emails`, troque o placeholder pelo **e-mail da pessoa** (será o login do painel admin — pergunte qual ela quer usar).
